@@ -1,0 +1,15 @@
+<!-- Trong tệp upload_file.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tải lên file</title>
+</head>
+<body>
+    <h1>Tải lên file</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Tải lên</button>
+    </form>
+</body>
+</html>
