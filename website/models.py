@@ -1,4 +1,5 @@
 from django.db import models
+from mdeditor.fields import MDTextField
 
 class problem(models.Model):
     problemID = models.CharField(max_length=255, primary_key=True)
@@ -115,3 +116,8 @@ class default_param(models.Model):
 class model_solver(models.Model):
     modelID = models.ForeignKey(model, on_delete=models.CASCADE)
     solverID = models.ForeignKey(solver, on_delete=models.CASCADE)
+
+
+class ExampleModel(models.Model):
+    name = models.CharField(max_length=10)
+    content = MDTextField()

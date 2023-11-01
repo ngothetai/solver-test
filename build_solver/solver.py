@@ -4,16 +4,17 @@ import plotly.graph_objs as go
 from plotly.offline import plot
 import sys
 
+def read_data()
+
 def solver(input_path, output_path):
     df = pd.read_csv(input_path)  # Sử dụng Pandas để đọc file CSV
     # Xử lý dữ liệu trong DataFrame 'df' ở đây
     x_list, y_list = df["x"].values.astype(int), df["y"].values.astype(int)
-    # Chuẩn bị tập hợp điểm (x, y)
     points = [(x, y) for x, y in zip(x_list, y_list)]  # Thay x_list và y_list bằng danh sách các điểm của bạn
-    # Tính Convex Hull
+    # Calculate Convex Hull
     hull = ConvexHull(points)
 
-    # Lấy các điểm trên Convex Hull
+    # Get points on Convex Hull
     convex_hull_points = [points[i] for i in hull.vertices]
 
     # Tạo dữ liệu cho biểu đồ Plotly
@@ -21,8 +22,7 @@ def solver(input_path, output_path):
         x=x_list,
         y=y_list,
         mode='markers',
-        marker=dict(color='blue', size=8),
-        name='Các điểm'
+        marker=dict(color='blue', size=8)
     )
     x = [point[0] for point in convex_hull_points]
     x.append(convex_hull_points[0][0])
@@ -47,7 +47,7 @@ def solver(input_path, output_path):
     
 if __name__ == '__main__':
     if len(sys.argv) != 3:
-        print("Sử dụng: your_task.py <input_file> <output_file>")
+        print("Use: your_task.py <input_file> <output_file>")
         sys.exit(1)
     input_path = sys.argv[1]
     output_path = sys.argv[2]

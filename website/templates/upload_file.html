@@ -1,15 +1,24 @@
-<!-- Trong tệp upload_file.html -->
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Tải lên file</title>
+    <title>Biểu mẫu tải file và nhập thông tin</title>
 </head>
 <body>
-    <h1>Tải lên file</h1>
-    <form method="post" enctype="multipart/form-data">
+    <form action="{% url 'upload_file' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Tải lên</button>
+        <label for="username">Tên người dùng:</label>
+        <input type="text" id="username" name="username" required><br><br>
+        
+        <label for="dataCount">Số bộ dữ liệu:</label>
+        <input type="number" id="dataCount" name="dataCount" required><br><br>
+        
+        <label for="uploadFile">Tải file lên:</label>
+        <input type="file" id="uploadFile" name="file" accept=".csv" required><br><br>
+        
+        <label for="addToDatabase">Đẩy kết quả vào cơ sở dữ liệu:</label>
+        <input type="checkbox" id="addToDatabase" name="addToDatabase"><br><br>
+        
+        <input type="submit" value="Gửi">
     </form>
 </body>
 </html>

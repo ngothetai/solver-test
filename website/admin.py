@@ -8,6 +8,7 @@ admin.site.register(models.problem)
 admin.site.register(models.model_run)
 admin.site.register(models.param_run)
 admin.site.register(models.solver)
+admin.site.register(models.ExampleModel)
 
 
 # Register your models here.
