@@ -11,12 +11,15 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_protect
+from django.template import RequestContext
+from django.shortcuts import render
 
 # constant path file for solver
 ROOT = os.getcwd() # Get current directory which run script
 file_input_path = os.path.join(ROOT, 'data_user_temp/request_file_of_user.csv')
-file_output_path = os.path.join(ROOT, '/data_user_temp/out_graph.html')
-exe_path = os.path.join(ROOT, '/exe_solvers/ConvexHull/solver')
+file_output_path = os.path.join(ROOT, 'data_user_temp/out_graph.html')
+exe_path = os.path.join(ROOT, 'utils/exe_solvers/ConvexHull/solver')
 
 
 # def upload_file(request):
@@ -43,35 +46,48 @@ exe_path = os.path.join(ROOT, '/exe_solvers/ConvexHull/solver')
 #         form = UploadFileForm()
 #     return render(request, 'upload_file.html', {'form': form})
 
-
 def process_form(request):
+    # Get data from database
+    solvers = example.objects.all()
+    name_Solver = solvers.values_list('exampleName', flat=True)[0]
+    description_Solver = solvers.values_list('description', flat=True)[0]
+    image_Solver = solvers.values_list('image', flat=True)[0]
+    exampleID = solvers.values_list('exampleID', flat=True)[0]
+
     if request.method == 'POST':
-        # Lấy giá trị từ biểu mẫu
-        username = request.POST.get('username')
-        data_count = request.POST.get('dataCount')
+        
+        # Get data from form
+        print(request.POST)
+        username = request.POST.get('userName')
+        solverName = request.POST.get('solverName')
         upload_file = request.FILES.get('file')
-        add_to_database = request.POST.get('addToDatabase')
-
-        # Xử lý dữ liệu theo nhu cầu
-        if add_to_database:
-            pass
-            # Lưu trữ dữ liệu vào cơ sở dữ liệu ở đây (ví dụ: Django ORM)
-            # Cần import và sử dụng các model và các phương thức lưu trữ dữ liệu của Django
-
-        # Thực hiện xử lý khác (ví dụ: lưu trữ file tải lên)
+        phoneNumber = request.POST.get('phoneNumber') # data type is string "on" or None
+        
+        # Process file input
         if upload_file:
-            with open('uploaded_file.csv', 'wb+') as destination:
+            with open(file_input_path, 'wb+') as destination:
                 for chunk in upload_file.chunks():
                     destination.write(chunk)
-        print(username)
-        print(data_count)
-        print(add_to_database)
+                    
+            # Run example
+            subprocess.call([exe_path, file_input_path, file_output_path])
+            
+            # Push data to database
+            example_run.objects.create(userName=username, exampleID=exampleID, runStatus='success', paramList={'file_name': upload_file.name})
+            
+        
+            # Read html output file from solver
+            with open(file_output_path, 'r') as file:
+                graph = file.read()
+            
+            # Return file html for render result
+            # return render(request, 'website/convex_hull.html', {'graph': graph})
+            return render(request, 'website/index.html', {'graph': graph, 'nameSolver': name_Solver, 'descriptionSolver': description_Solver, 'imageSolver': image_Solver})
+        
 
-        # Trả về một phản hồi cho người dùng
-    return render(request, 'upload_file.html')
-
-
+        # Return file html for render upload page
+    return render(request, 'website/index.html',  {'algorithm': 'DCA-CUT'})
 
 # Create your views here.
 def home (request):
-    return render(request, "index.html")
+    return render(request, "website/index.html")

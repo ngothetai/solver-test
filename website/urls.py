@@ -8,6 +8,4 @@ urlpatterns = [
     path('', views.home , name="home"),
     # path('upload/', views.upload_file, name='upload_file'),
     path('upload/', views.process_form, name='upload_file'),
-    url(r"mdeditor/", include('mdeditor.urls')),
 ]
-
